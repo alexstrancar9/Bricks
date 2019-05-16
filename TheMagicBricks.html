@@ -1,0 +1,333 @@
+<html>
+<head>
+<script src="js/jQuery.js"></script>
+<link rel="stylesheet" type="text/css" href="css/mojcss.css">
+<title>Magic Bricks</title>
+</head>
+<body onload="drawIt()">
+
+<div id="glavni">
+
+<div id="naslov">
+<font id="tekst">MAGIC BRICKS</font>
+
+</div>
+
+
+<div id="score">
+</div>
+
+<div id="igra">
+
+<canvas id="canvas" width="700" height="500">
+</canvas>
+
+<div id="info">
+   <p>Points: <mark id="tocke">0</mark></p>
+   <p>Time: <mark id="cas">00:00</mark></p>
+   <p>Lives: <mark id="lives"></mark></p>
+</div>
+
+
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script type="application/javascript">
+function drawIt() {
+var paddlew;
+var rightDown = false;
+var leftDown = false;
+var canvasMinX;
+var canvasMaxX;
+var x = 150;
+var y = 150;
+var dx = 2;
+var dy = 4;
+var WIDTH;
+var HEIGHT;
+var r=10;
+var ctx;
+var NCOLS;
+var BRICKWIDTH;
+var BRICKHEIGHT;
+var PADDING;
+var paddlex;
+var paddleh;
+var bricks;
+var NROWS;
+var paddlecolor = "#8621a5";
+var ballcolor = "#8621a5"; 
+var sekunde;
+var sekundeI;
+var minuteI;
+var intTimer;
+var izpisTimer;
+var tocke=0;
+var pavza=true;
+var life=1;
+
+
+swal("Welcome to Magic Bricks!", "Use THE ARROW KEYS or your MOUSE to move. Press S to start the game. Don't let the ball fall on the ground!");
+
+
+
+const img1 = new Image();
+img1.src = 'slike/brick1.png';
+const img2 = new Image();
+img2.src = 'slike/brick2.png';
+const img3 = new Image();
+img3.src = 'slike/brick3.png';
+
+
+init();
+
+
+
+function init() {
+ctx = $('#canvas')[0].getContext("2d");
+WIDTH = $("#canvas").width();
+HEIGHT = $("#canvas").height();
+ctx.fillStyle = "rgba(0, 0, 35, 1)";
+d=setInterval(draw, 10);
+$("#tocke").html(tocke);
+ sekunde = 0;
+izpisTimer = "00:00";
+intTimer = setInterval(timer, 1000);
+}
+
+
+
+function timer(){
+if(pavza==false)
+sekunde++;
+
+sekundeI = ((sekundeI = (sekunde % 60)) > 9) ? sekundeI : "0"+sekundeI;
+minuteI = ((minuteI = Math.floor(sekunde / 60)) > 9) ? minuteI : "0"+minuteI;
+if(life>0)
+izpisTimer = minuteI + ":" + sekundeI;
+
+$("#cas").html(izpisTimer);
+}
+
+
+
+function circle(x,y,r) {
+ctx.beginPath();
+ctx.arc(x, y, r, 0, Math.PI*2, true);
+ctx.closePath();
+ctx.fill();
+}
+
+function rect(x,y,w,h) {
+ctx.beginPath();
+ctx.rect(x,y,w,h);
+ctx.closePath();
+ctx.fill();
+}
+function init_paddle() {
+  paddlex = WIDTH / 2;
+  paddleh = 10;
+  paddlew = 80;
+}
+
+
+
+function init_mouse() {
+canvasMinX = ($("canvas").offset().left);
+  canvasMaxX = canvasMinX + WIDTH+42;
+}
+function onMouseMove(evt) {
+	if(evt.pageX > canvasMinX+paddlew/2 && evt.pageX < canvasMaxX-paddlew)
+	paddlex=(evt.pageX-canvasMinX)-paddlew/2;
+	if(evt.pageX < canvasMinX+paddlew/2)
+		paddlex=0;
+	if(evt.pageX > canvasMaxX-paddlew)	
+		paddlex=700-paddlew;
+		console.log(canvasMaxX);
+ 
+}
+
+$(document).mousemove(onMouseMove); 
+init_mouse();
+
+
+function onKeyDown(evt) {
+  if (evt.keyCode == 39) 
+rightDown = true;
+  else if (evt.keyCode == 37){
+	leftDown = true;
+	}
+	else if(evt.keyCode == 82){
+		location.reload();
+	}	
+}
+
+function onKeyUp(evt) {
+  if (evt.keyCode == 39) 
+rightDown = false;
+  else if (evt.keyCode == 37) leftDown = false;
+}
+$(document).keydown(onKeyDown);
+$(document).keyup(onKeyUp);  
+
+function initbricks() {
+  NROWS = 5;
+  NCOLS = 5;
+  PADDING = 2;
+  BRICKWIDTH = 138;
+  BRICKHEIGHT = 15;
+  bricks = new Array(NROWS);
+  for (i=0; i < NROWS; i++) {
+    bricks[i] = new Array(NCOLS);
+    for (j=0; j < NCOLS; j++) {
+	if(i==j){
+	bricks[i][j] = 1;
+	}
+	else if(i+j==4){
+	bricks[i][j] = 2;
+	}
+	else
+      bricks[i][j] = 3;
+    }
+  }
+}
+
+
+
+function clear() {
+ctx.clearRect(0, 0, WIDTH, HEIGHT);
+}
+
+
+//END LIBRARY CODE
+function draw() {
+  clear();
+  ctx.color=ballcolor;
+  circle(x, y, 10);
+   if (rightDown && paddlex<WIDTH-paddlew) paddlex += 5;
+  else if (leftDown && paddlex>0) paddlex -= 5;
+  ctx.color=paddlecolor;
+  rect(paddlex, HEIGHT-paddleh, paddlew, paddleh);
+  
+   
+
+//rise opeke
+  for (i=0; i < NROWS; i++) {
+    for (j=0; j < NCOLS; j++) {
+      if (bricks[i][j] == 1) {
+	  ctx.drawImage(img1,(j * (BRICKWIDTH + PADDING)) + PADDING, 
+            (i * (BRICKHEIGHT + PADDING)) + PADDING);
+      }
+	  else if(bricks[i][j] == 2){
+	  ctx.drawImage(img2,(j * (BRICKWIDTH + PADDING)) + PADDING, 
+            (i * (BRICKHEIGHT + PADDING)) + PADDING);
+	  }
+	  else if(bricks[i][j] == 3){
+	  ctx.drawImage(img3,(j * (BRICKWIDTH + PADDING)) + PADDING, 
+            (i * (BRICKHEIGHT + PADDING)) + PADDING);
+	  }
+    }
+  }
+  
+  document.getElementById("lives").innerHTML=""+life;
+ 
+  //PAVZA
+  
+ function onKeyDown(evt) {
+  if (evt.keyCode == 80) 
+   pavza = true;
+  if (evt.keyCode == 83) 
+  pavza = false;
+  
+}
+
+  $(document).keydown(onKeyDown);
+ 
+  
+  if(pavza==true){
+  
+  }else if(pavza==false)
+  
+  
+  
+  
+  rowheight = BRICKHEIGHT + PADDING ; //Smo zadeli opeko?
+  colwidth = BRICKWIDTH + PADDING ;
+  row = Math.floor(y/rowheight);
+  col = Math.floor(x/colwidth);
+
+  //Če smo zadeli opeko, vrni povratno kroglo in označi v tabeli, da opeke ni več
+if (y < NROWS * rowheight && row >= 0 && col >= 0 && bricks[row][col] >= 1) {
+
+dy = -dy;
+bricks[row][col]--;
+if(bricks[row][col]==0){
+	tocke += 1;
+	$("#tocke").html(tocke);
+}
+
+
+}	
+	if(tocke==25){
+		swal("Congratulations! You destroyed every brick! Press R to restart.")
+		clearInterval(d);
+	}
+
+
+  if (x + dx > WIDTH-r || x + dx < 0+r)
+    dx = -dx;
+
+  if (y + dy < 0+r)
+    dy = -dy;
+  else if (y + dy > HEIGHT-r) {
+    if (x > paddlex && x < paddlex + paddlew){
+	dx = 8 * ((x-(paddlex+paddlew/2))/paddlew);
+      dy = -dy;
+	  }
+    else{ 
+	  life=life-1;
+	  
+	}  
+  }
+if(life==0){
+		
+         swal("GAME OVER!", "Press R to restart.", "");
+         clearInterval(d);
+		 
+      }
+				
+				
+				
+
+  x += dx;
+  y += dy;
+  
+  
+}
+
+
+
+
+init_paddle();
+initbricks();
+
+
+
+}
+</script>
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+
+
+
+</body>
+</html>

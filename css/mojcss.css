@@ -1,0 +1,77 @@
+*{
+	margin:0;
+	padding:0;
+	
+}
+
+body{
+	background-image:url("../slike/ozadje.jpg");
+	background-repeat:no-repeat;
+	background-size:cover;
+	
+}
+
+#glavni{
+	width:700px;
+	height:588px;
+	margin:5% auto;
+	background-color:rgba(140,140,140,0.90);
+	text-align:center;
+	border: 2px solid black;
+}
+
+#score{
+	width:700px;
+	height:80px;
+	background-color:rgba(140,140,140,0.90);
+	
+}
+
+#naslov{
+	width:700px;
+	height:0px;
+	background-color:rgba(140,140,140,0.90);	
+}
+
+#tekst{
+	font-size:60px;
+	font-family:wizfont;
+	color: purple;	
+}
+
+#cas{
+	margin: 5px auto;
+	font-family:Times New Roman;
+}
+
+#tocke{
+	margin: 5px auto;
+	font-family:Times New Roman;
+}
+
+#lives{
+	margin: 5px auto;
+	font-family:Times New Roman;	
+}
+
+#canvas{
+	width:700px; 
+	height:500px;
+	
+}
+
+#info{
+	height:150px;
+	width:190px;
+	border:1px solid black;
+	margin:5% auto;
+	color:purple;
+	font-size:30px;
+	background-color:rgba(140,140,140,0.90);
+	font-family:wizfont;
+}
+
+@font-face {
+  font-family: wizfont;
+  src: url("../font/wizfont.ttf");
+
